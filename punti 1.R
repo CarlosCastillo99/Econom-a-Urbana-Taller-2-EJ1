@@ -1,6 +1,6 @@
 rm(list = ls())
 
-# Paquetes mínimos necesarios
+# Paquetes
 suppressMessages({
   library(pacman)
   p_load(sf, tidyverse, tmap)
@@ -14,6 +14,7 @@ load("Taller2_Ejercicio1.Rdata")
 library(dplyr)
 library(sf)
 library(tmap)
+#------------------------------PARTE 1------------------------------------
 #Luego de revisar cada variable, comenzamos a limpiar y dejar todo listo para después plotear.
 # 1. Preparar bases 
 # barrios: sf con geometría de las 180 zonas
@@ -233,6 +234,241 @@ tmap_save(
   filename = "map_growth_pc_restaurants.png",
   width = 8, height = 6, units = "in", dpi = 300
 )
+#------------------------------PARTE 2-----------------------------------------
+#Distribución no paramétrica de precios (2004 y 2012)
+#Kernels: Gaussiano y Epanechnikov
+##Bandwidth: rule-of-thumb de Silverman
+#Limpiemos el enviorment para que podamos trabajar mejor sin los resultados del ejercicio 1
+rm(list = ls())
+# volvamos a cargar la ruta
+setwd("C:/Users/pc/Downloads/taller 2 urbana")
+load("Taller2_Ejercicio1.Rdata")
+# --------------------------------2.A--------------------------------------
+# 1. Extraer precios y eliminar NA
+
+prezzo_2004 <- restaurants |>
+  dplyr::filter(!is.na(prezzo2004)) |>
+  dplyr::pull(prezzo2004)
+
+prezzo_2012 <- restaurants |>
+  dplyr::filter(!is.na(prezzo2012)) |>
+  dplyr::pull(prezzo2012)
+
+# 2. rule-of-thumb de Silverman
+#    h = 1.06 * min(sd, IQR/1.34) * n^(-1/5)
+
+bw_rot <- function(x) {
+  s   <- stats::sd(x)
+  a   <- min(s, IQR(x) / 1.34)
+  1.06 * a * length(x)^(-1/5)
+}
+
+bw_2004 <- bw_rot(prezzo_2004)
+bw_2012 <- bw_rot(prezzo_2012)
+#revisemos qué h usar
+cat("Bandwidth 2004 (rule-of-thumb):", bw_2004, "\n")
+cat("Bandwidth 2012 (rule-of-thumb):", bw_2012, "\n")
+
+
+## 3. Estimar densidades para cada kernel y año
+
+# Usamos el mismo rango de precios para ambos años
+x_min <- min(prezzo_2004, prezzo_2012) - 5
+x_max <- max(prezzo_2004, prezzo_2012) + 5
+
+dens_2004_gauss <- density(
+  prezzo_2004,
+  bw     = bw_2004,
+  kernel = "gaussian",
+  from   = x_min,
+  to     = x_max,
+  n      = 1024
+)
+
+dens_2004_epan <- density(
+  prezzo_2004,
+  bw     = bw_2004,
+  kernel = "epanechnikov",
+  from   = x_min,
+  to     = x_max,
+  n      = 1024
+)
+
+dens_2012_gauss <- density(
+  prezzo_2012,
+  bw     = bw_2012,
+  kernel = "gaussian",
+  from   = x_min,
+  to     = x_max,
+  n      = 1024
+)
+
+dens_2012_epan <- density(
+  prezzo_2012,
+  bw     = bw_2012,
+  kernel = "epanechnikov",
+  from   = x_min,
+  to     = x_max,
+  n      = 1024
+)
+
+
+# 4. Gráfico comparativo por año
+
+par(mfrow = c(1, 1))
+par(mar = c(5, 4, 4, 2) + 0.1)
+
+# layout vertical
+par(
+  mfrow = c(2, 1),          # 2 filas, 1 columna
+  mar   = c(3, 4, 2, 1)     # márgenes más pequeños para que nos quepa en el doc
+)
+
+# 2004
+plot(
+  dens_2004_gauss,
+  lwd  = 2,
+  col  = "steelblue",
+  main = "Densidad no paramétrica de precios (2004)",
+  xlab = "Precio",
+  ylab = "Densidad estimada"
+)
+lines(
+  dens_2004_epan,
+  lwd = 2,
+  col = "firebrick",
+  lty = 2
+)
+legend(
+  "topright",
+  legend = c("Gaussiano", "Epanechnikov"),
+  col    = c("steelblue", "firebrick"),
+  lty    = c(1, 2),
+  lwd    = 2,
+  bty    = "n"
+)
+
+# 2012
+plot(
+  dens_2012_gauss,
+  lwd  = 2,
+  col  = "steelblue",
+  main = "Densidad no paramétrica de precios (2012)",
+  xlab = "Precio",
+  ylab = "Densidad estimada"
+)
+lines(
+  dens_2012_epan,
+  lwd = 2,
+  col = "firebrick",
+  lty = 2
+)
+legend(
+  "topright",
+  legend = c("Gaussiano", "Epanechnikov"),
+  col    = c("steelblue", "firebrick"),
+  lty    = c(1, 2),
+  lwd    = 2,
+  bty    = "n"
+)
+
+# --------------------------------2.B--------------------------------------
+# (b) KDE Epanechnikov con tres anchos de banda
+
+# 1. Tres anchos de banda por año: h, h/2 y 2h
+h_2004    <- bw_2004
+h_2004_m  <- bw_2004 / 2      # mitad del rule-of-thumb
+h_2004_2  <- 2 * bw_2004      # doble del rule-of-thumb
+
+h_2012    <- bw_2012
+h_2012_m  <- bw_2012 / 2
+h_2012_2  <- 2 * bw_2012
+
+cat("h_2004   =", h_2004,  "\n",
+    "h_2004/2 =", h_2004_m, "\n",
+    "2*h_2004 =", h_2004_2, "\n\n")
+
+cat("h_2012   =", h_2012,  "\n",
+    "h_2012/2 =", h_2012_m, "\n",
+    "2*h_2012 =", h_2012_2, "\n")
+
+# 2. Rango común de precios para todas las densidades
+x_min <- min(c(prezzo_2004, prezzo_2012), na.rm = TRUE) - 5
+x_max <- max(c(prezzo_2004, prezzo_2012), na.rm = TRUE) + 5
+
+
+# 3. Densidades Epanechnikov 2004
+dens_2004_epan_h   <- density(prezzo_2004, kernel = "epanechnikov",
+                              bw = h_2004,   from = x_min, to = x_max, n = 1024)
+dens_2004_epan_hm  <- density(prezzo_2004, kernel = "epanechnikov",
+                              bw = h_2004_m, from = x_min, to = x_max, n = 1024)
+dens_2004_epan_h2  <- density(prezzo_2004, kernel = "epanechnikov",
+                              bw = h_2004_2, from = x_min, to = x_max, n = 1024)
+
+# 4. Densidades Epanechnikov 2012
+dens_2012_epan_h   <- density(prezzo_2012, kernel = "epanechnikov",
+                              bw = h_2012,   from = x_min, to = x_max, n = 1024)
+dens_2012_epan_hm  <- density(prezzo_2012, kernel = "epanechnikov",
+                              bw = h_2012_m, from = x_min, to = x_max, n = 1024)
+dens_2012_epan_h2  <- density(prezzo_2012, kernel = "epanechnikov",
+                              bw = h_2012_2, from = x_min, to = x_max, n = 1024)
+
+# rango comun eje Y
+ylim_range <- range(
+  dens_2004_epan_h$y,  dens_2004_epan_hm$y,  dens_2004_epan_h2$y,
+  dens_2012_epan_h$y,  dens_2012_epan_hm$y,  dens_2012_epan_h2$y
+)
+
+# 5. Gráfico comparativo: 2004 y 2012 (tres bandas por año)
+opar <- par(mfrow = c(2, 1),
+            mar   = c(4, 4, 3, 1) + 0.1)
+
+## Panel superior: 2004
+plot(dens_2004_epan_h,
+     lwd  = 2,
+     col  = "black",
+     main = "Precios 2004 (kernel Epanechnikov)",
+     xlab = "Precio",
+     ylab = "Densidad estimada",
+     ylim = ylim_range)   # <- aquí usas el rango común
+lines(dens_2004_epan_hm, col = "steelblue",  lwd = 2, lty = 2)
+lines(dens_2004_epan_h2, col = "firebrick",  lwd = 2, lty = 3)
+legend("topright",
+       inset  = c(0.02,0.02),
+       legend = c("h (rule-of-thumb)", "h/2 (sub-suavizado)", "2h (sobre-suavizado)"),
+       col    = c("black", "steelblue", "firebrick"),
+       lty    = c(1, 2, 3),
+       lwd    = 2,
+       bty    = "n",
+       cex    = 0.8)
+
+## Panel inferior: 2012
+plot(dens_2012_epan_h,
+     lwd  = 2,
+     col  = "black",
+     main = "Precios 2012 (kernel Epanechnikov)",
+     xlab = "Precio",
+     ylab = "Densidad estimada",
+     ylim = ylim_range)   # <- mismo rango en el segundo panel
+lines(dens_2012_epan_hm, col = "steelblue",  lwd = 2, lty = 2)
+lines(dens_2012_epan_h2, col = "firebrick",  lwd = 2, lty = 3)
+legend("topright",
+       inset  = c(0.02,0.02),
+       legend = c("h (rule-of-thumb)", "h/2 (sub-suavizado)", "2h (sobre-suavizado)"),
+       col    = c("black", "steelblue", "firebrick"),
+       lty    = c(1, 2, 3),
+       lwd    = 2,
+       bty    = "n",
+       cex    = 0.8)
+
+par(opar)
+
+#------------------------------PARTE 3-----------------------------------------
+
+
+
+
+
 
 
 
