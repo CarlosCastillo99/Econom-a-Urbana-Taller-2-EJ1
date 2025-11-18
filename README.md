@@ -1,10 +1,10 @@
 # Economía Urbana - Taller 2: Aglomeración de Restaurantes en Milán
 
-## 📋 Descripción
+## Descripción
 
 Este proyecto replica y extiende el análisis de **Leonardi y Moretti (2023)** sobre la aglomeración de restaurantes en Milán, Italia, examinando los efectos de la liberalización de la entrada al sector de restaurantes entre 2004 y 2012. El trabajo aplica técnicas de economía urbana espacial, estimación no paramétrica y tests de localización para estudiar las economías de aglomeración en servicios locales.
 
-## 👥 Autores
+## Autores
 
 - **Luis Alejandro Rubiano Guerrero** - 202013482 - [la.rubiano@uniandes.edu.co](mailto:la.rubiano@uniandes.edu.co)
 - **Andrés Felipe Rosas Castillo** - 202013471 - [a.rosas@uniandes.edu.co](mailto:a.rosas@uniandes.edu.co)
@@ -12,7 +12,7 @@ Este proyecto replica y extiende el análisis de **Leonardi y Moretti (2023)** s
 
 **Universidad de los Andes** - Curso de Economía Urbana (2025)
 
-## 📁 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```
 ├── README.md                    # Este archivo
@@ -27,7 +27,7 @@ Este proyecto replica y extiende el análisis de **Leonardi y Moretti (2023)** s
     └── test_DO_top5_2004_2012_gauss.png
 ```
 
-## 🔧 Requisitos
+## Requisitos
 
 ### Software necesario
 - **R** (versión ≥ 4.0)
@@ -45,7 +45,7 @@ El archivo `Taller2_Ejercicio1.Rdata` debe contener:
 - `poblacion`: data.frame con población nocturna y diurna por zona
 - `restaurants`: data.frame con información de restaurantes (2004 y 2012)
 
-## 🚀 Instrucciones de Uso
+## Instrucciones de Uso
 
 ### 1. Preparar el entorno
 ```r
@@ -82,30 +82,30 @@ pdflatex main\ (1).tex
 pdflatex main\ (1).tex
 ```
 
-## 📊 Principales Resultados
+## Principales Resultados
 
-### 1️⃣ Evolución Espacial (2004-2012)
+### Evolución Espacial (2004-2012)
 - **2004**: Distribución relativamente uniforme (efecto de regulación de distancias mínimas)
 - **2012**: Fuerte polarización espacial post-liberalización
 - **Conclusión**: Evidencia de economías de aglomeración auto-reforzadas
 
-### 2️⃣ Distribución de Precios
+### Distribución de Precios
 - **Forma**: Unimodal con moda en 30-40 euros
 - **Evolución**: Desplazamiento hacia la derecha y cola más pesada en 2012
 - **Interpretación**: Concentración alrededor de precio de referencia, consistente con competencia en precios con costos de búsqueda
 
-### 3️⃣ Test de Localización
+### Test de Localización
 - **Distancias cortas (0-0.36 km)**: Aglomeración significativa
 - **Distancias medias (>0.40 km)**: Dispersión relativa
 - **Robustez**: Resultados consistentes con kernels Gaussiano y Epanechnikov
 
-## 📚 Referencias Principales
+## Referencias Principales
 
 - **Leonardi, M., & Moretti, E. (2023)**. The Agglomeration of Urban Amenities: Evidence from Milan Restaurants. *American Economic Review: Insights*, 5(2), 141-157.
 
 - **Duranton, G., & Overman, H. G. (2005)**. Testing for localization using micro-geographic data. *The Review of Economic Studies*, 72(4), 1077-1106.
 
-## 🔍 Metodología Técnica
+## Metodología Técnica
 
 ### Supuestos clave
 - **Población de referencia**: Diurna (`day_pop`), ya que restaurantes atienden principalmente durante el día
@@ -116,7 +116,7 @@ pdflatex main\ (1).tex
 - Sistema de coordenadas: **UTM 32N** (EPSG:32632) para mediciones en metros
 - Distancias en kilómetros, rango [0, 1] km para test D&O
 
-## 💡 Interpretación Económica
+## Interpretación Económica
 
 El trabajo documenta cómo la **liberalización regulatoria** genera:
 1. **Divergencia espacial**: "Ganadores y perdedores" en dotación de amenidades
@@ -125,13 +125,13 @@ El trabajo documenta cómo la **liberalización regulatoria** genera:
 
 Este patrón contrasta con economías de aglomeración en sector transable (productividad) y resalta el rol de **externalidades de demanda** en servicios locales.
 
-## 📝 Notas Adicionales
+## Notas Adicionales
 
 - El código incluye **semillas aleatorias** (`set.seed`) para reproducibilidad de simulaciones
 - Los mapas usan paletas **OrRd** (niveles) y **Blues** (crecimiento) siguiendo el paper original
 - Todos los gráficos se guardan automáticamente en alta resolución (300 dpi)
 
-## 📄 Licencia
+## Licencia
 
 Este trabajo es material académico de la Universidad de los Andes. Todos los derechos reservados a los autores y la institución.
 
