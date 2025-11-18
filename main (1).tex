@@ -1,0 +1,307 @@
+\documentclass[10pt,conference]{IEEEtran}
+% Paquetes básicos
+\usepackage[utf8]{inputenc}   % Codificación
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{lipsum}           
+\usepackage{microtype}
+\usepackage{natbib}
+\usepackage{graphicx} 
+\usepackage{caption}   
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage[font=small]{caption} 
+% Título y autores
+\title{Replicación de Leonardi y Moretti (2023): aglomeración de restaurantes en Milán}
+
+\author{
+\IEEEauthorblockN{Luis Alejandro Rubiano Guerrero}
+\IEEEauthorblockA{202013482\\
+\texttt{la.rubiano@uniandes.edu.co}}
+\and
+\IEEEauthorblockN{Andrés Felipe Rosas Castillo}
+\IEEEauthorblockA{202013471\\
+\texttt{a.rosas@uniandes.edu.co}}
+\and
+\IEEEauthorblockN{Carlos Andrés Castillo Cabrera}
+\IEEEauthorblockA{202116837\\
+\texttt{ca.castilloc1@uniandes.edu.co}}
+}
+
+\begin{document}
+\maketitle
+\section{Replicación Figura 1 Leonardi y Moretti (2023)}
+\subsection*{Introducción}
+
+En este ejercicio replicamos la Figura 1 de \citet{LeonardiMoretti2023}, que
+describe la distribución espacial de restaurantes en Milán y su evolución entre
+2004 y 2012. El objetivo es reconstruir los mapas de restaurantes per cápita por
+barrio y el crecimiento porcentual en el número de restaurantes per cápita.
+
+\subsection*{Datos y preparación}
+
+Trabajamos con 180 zonas censales (\texttt{zona180}) de la ciudad. Para cada
+zona contamos con: (i) geometría de los barrios (\texttt{barrios}), (ii)
+población nocturna y diurna (\texttt{poblacion}, variables \texttt{nite\_pop} y
+\texttt{day\_pop}) y (iii) registros de restaurantes en 2004 y 2012
+(\texttt{restaurants}). A partir de esta información construimos, para cada año,
+el número de restaurantes por barrio.
+
+\subsection*{Metodología}
+
+Para cada barrio calculamos el número de restaurantes por mil habitantes
+diurnos, \texttt{pc\_rest\_2004} y \texttt{pc\_rest\_2012}, usando \texttt{day\_pop}. Luego
+obtenemos la desviación respecto al promedio de la ciudad en cada año
+(\texttt{diff\_city\_2004} y \texttt{diff\_city\_2012}) y el crecimiento
+porcentual del número de restaurantes per cápita entre 2004 y 2012
+(\texttt{growth\_pc}). Estas variables se representan mediante mapas temáticos por barrio
+con intervalos fijos, siguiendo la escala del artículo original.
+
+\noindent Supuestos de medición:
+Consideramos población diurna (\texttt{day\_pop}) como denominador de los
+indicadores per cápita, dado que los restaurantes atienden principalmente a la
+población presente durante el día. Un establecimiento se clasifica como
+restaurante activo en un año si tiene coordenadas reportadas o aparece
+identificado como ethnic, Michelin o sit-down. Los mapas
+coropléticos se construyen con cortes fijos en la variable de interés, siguiendo
+la escala de la Figura 1 del artículo original.
+
+\subsection*{Resultados}
+\begin{figure}[htbp]
+    \centering
+    % Panel superior: niveles per cápita 2004 y 2012
+    \includegraphics[
+        width=\textwidth,
+        height=0.2\textheight,
+        keepaspectratio
+    ]{fig1_top_milan_restaurants.png}
+    
+    
+    
+    % Panel inferior: crecimiento porcentual
+    \includegraphics[
+        width=\textwidth,
+        height=0.2\textheight,
+        keepaspectratio
+    ]{map_growth_pc_restaurants.png}
+    
+    \caption{\small Número de restaurantes per cápita por barrio en 2004 y 2012 (panel superior) y crecimiento porcentual del número de restaurantes per cápita entre 2004 y 2012 (panel inferior), replicando la Figura 1 de \citet{LeonardiMoretti2023}.}
+    \label{fig:figura1_milan}
+\end{figure}
+
+\noindent La parte superior de la Figura 1 muestra que ya en 2004 existían diferencias en la dotación de restaurantes per cápita por barrio, pero la dispersión alrededor del promedio de la ciudad era relativamente moderada: muchos barrios se encuentran en el rango de más o menos dos restaurantes por cada mil habitantes diurnos, y sólo unos pocos presentan concentraciones claramente por encima de la media. Esto es consistente con el rol de la antigua regulación de distancias mínimas, que mantenía una distribución de restaurantes relativamente uniforme entre zonas, a pesar de las diferencias subyacentes en densidad de empleo, renta y atractivo urbano.
+
+\noindent En 2012, siete años después de la liberalización de la entrada, el mapa de restaurantes per cápita exhibe un patrón mucho más polarizado. Aparece un conjunto de barrios con una alta concentración de restaurantes (valores muy por encima de la media de Milán) y, al mismo tiempo, un grupo amplio de zonas con niveles sistemáticamente inferiores al promedio. Desde la perspectiva de economía urbana, esto es lo que cabe esperar si existen externalidades de demanda y economías de aglomeración en el sector de restaurantes: cuando la entrada deja de estar administrativamente restringida, los nuevos establecimientos tienden a ubicarse precisamente donde ya hay muchos restaurantes, porque allí encuentran más flujo de personas, mayor variedad que atrae consumidores, mejor información y complementariedades en la oferta.
+
+\noindent El panel inferior, que muestra el crecimiento porcentual de restaurantes per cápita entre 2004 y 2012, confirma esta dinámica de divergencia. Los mayores crecimientos se concentran en los mismos barrios que ya tenían una situación relativamente ventajosa, mientras que muchas zonas parten de niveles bajos y crecen poco o incluso pierden restaurantes per cápita. Esta evolución es coherente con un proceso de ``ganadores y perdedores'' propio de modelos con externalidades auto-reforzadas, donde algunos barrios se consolidan como polos de amenidades de consumo, mientras otros quedan rezagados, generando una estructura urbana más desigual en el acceso local a restaurantes.
+
+\section{Distribución de precios}
+
+\begin{figure}[htbp]
+    \centering
+    \captionsetup{font=small}%
+    \includegraphics[width=0.5\textwidth]{kde_precios_gauss_epan_2004_20121.png}
+    \caption{\small Distribución no paramétrica de precios de restaurantes en 2004 y 2012. 
+    Las líneas continuas corresponden al kernel gaussiano y las líneas punteadas al
+    kernel Epanechnikov. En ambos casos el ancho de banda se elige mediante la
+    regla de Silverman (rule-of-thumb).}
+    \label{fig:kde_precios_gauss_epan}
+\end{figure}
+
+\subsection*{Distribución no paramétrica de precios (kernels gaussiano y Epanechnikov)}
+
+A partir de las observaciones de precios no faltantes (810 restaurantes en
+2004 y 981 en 2012), estimamos densidades kernel usando dos funciones de
+ponderación: gaussiano y Epanechnikov. En ambos años el ancho de banda se
+eligió mediante la regla de Silverman (rule-of-thumb), lo que produce
+valores de $h_{2004} \approx 3{,}1$ y $h_{2012} \approx 2{,}6$.
+
+\noindent En el c\'alculo implementamos la versi\'on robusta de la regla de Silverman,
+\[
+h = 1.06 \min\{\hat\sigma,\ \mathrm{IQR}/1.34\}\, n^{-1/5},
+\]
+de modo que el ancho de banda se determina por el menor entre la desviaci\'on
+est\'andar muestral y una medida robusta de dispersi\'on basada en el rango
+intercuart\'il. Esta elecci\'on tiende a producir valores de \(h\) algo menores
+que la versi\'on ``cl\'asica'' basada solo en \(\hat\sigma\), por lo que nuestras
+densidades muestran algo m\'as de variaci\'on local que estimaciones alternativas
+con un \(h\) m\'as grande.
+
+\noindent Las estimaciones para los dos kernels son prácticamente indistinguibles:
+las curvas gaussiana y Epanechnikov se superponen casi por completo tanto en
+2004 como en 2012. Esto sugiere que, dado el tamaño muestral y el ancho de
+banda empleado, la forma estimada de la distribución es muy poco sensible a la
+elección del kernel.
+
+\noindent En términos de forma, en ambos años la densidad presenta una única moda en el
+rango de 30--40 euros y una cola derecha alargada, que refleja la presencia de
+algunos restaurantes con precios considerablemente más altos. Entre 2004 y
+2012 la distribución se desplaza hacia la derecha (mayores precios típicos) y
+la cola derecha se hace algo más pesada, lo que indica un aumento tanto en el
+nivel medio como en la dispersión de precios del sector de restaurantes en Milán.
+
+\subsection*{Distribuci\'on no param\'etrica con kernel Epanechnikov}
+
+Para cada a\~no estimamos la distribuci\'on no param\'etrica de precios usando un
+kernel Epanechnikov. Como referencia tomamos el ancho de banda
+``rule-of-thumb'' calculado en el apartado anterior, $h_{2004}$ y $h_{2012}$, y
+construimos tres estimaciones por a\~no: (i) el ancho de banda ``rule-of-thumb''
+$h$, (ii) un ancho de banda reducido $h/2$ (sub-suavizado) y (iii) un ancho de
+banda ampliado $2h$ (sobre-suavizado). Las seis curvas resultantes se muestran
+en la Figura~\ref{fig:kde_epanechnikov}.
+
+\noindent En ambos a\~nos la distribuci\'on estimada de precios es unimodal y se concentra
+en el rango aproximado de 20--40 euros. La estimaci\'on con $h/2$ presenta m\'as
+variaci\'on local y varios ``picos'' peque\~nos, reflejando una mayor varianza de
+la estimaci\'on. En contraste, la curva asociada a $2h$ es mucho m\'as suave y
+tiende a aplanar la cola derecha, lo que indica un sesgo mayor por
+sobre-suavizaci\'on. El ancho de banda ``rule-of-thumb'' $h$ ofrece un compromiso
+razonable entre ambos extremos, capturando bien la forma general de la
+distribuci\'on sin introducir demasiada irregularidad.
+
+\noindent Comparando 2004 y 2012, las formas de las distribuciones con kernel
+Epanechnikov son muy similares a las obtenidas con el kernel gaussiano: la
+distribuci\'on de 2012 presenta una moda ligeramente m\'as alta y una
+concentraci\'on algo mayor alrededor del pico, lo que sugiere precios algo m\'as
+homog\'eneos en 2012. En todo caso, las conclusiones cualitativas sobre la
+distribuci\'on de precios son robustas tanto a la elecci\'on del kernel como a
+cambios razonables en el ancho de banda.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{Epanechnikov_3_anchos.png}
+  \caption{Estimaci\'on no param\'etrica de la distribuci\'on de precios con
+  kernel Epanechnikov para 2004 y 2012, utilizando tres anchos de banda:
+  $h$ (rule-of-thumb), $h/2$ y $2h$.}
+  \label{fig:kde_epanechnikov}
+\end{figure}
+
+\subsection*{Concentraci\'on de precios y explicaci\'on te\'orica}
+
+Las densidades no param\'etricas muestran una masa de probabilidad elevada en
+un rango relativamente estrecho de precios (en torno a 20--40 euros), con una
+cola derecha m\'as bien delgada. Esto indica una clara concentraci\'on alrededor
+de un ``precio de referencia'' del mercado: muchos restaurantes fijan precios
+muy similares para men\'us comparables y la dispersi\'on observada es acotada.
+
+\noindent Este patr\'on es coherente con modelos de
+competencia en precios con costos de b\'usqueda y con econom\'ias de
+aglomeraci\'on en el sector de restaurantes. Cuando muchos locales se
+concentran en una misma zona, la aglomeraci\'on genera externalidades de
+demanda: la presencia de varios restaurantes cercanos atrae m\'as clientes al
+\'area y aumenta el mercado potencial de cada firma. Al mismo tiempo, la
+proximidad geogr\'afica facilita la comparaci\'on de precios, de modo que un
+restaurante que se desv\'ia demasiado por encima del nivel modal corre el
+riesgo de perder una fracci\'on importante de su clientela.
+
+\noindent En equilibrio, la combinaci\'on de presi\'on competitiva (por comparaci\'on de
+precios) y cierta diferenciaci\'on de producto (calidad, tipo de cocina,
+servicio) induce una distribuci\'on de precios con un pico marcado alrededor de
+un precio de referencia y colas relativamente delgadas, tal como se observa en
+las estimaciones emp\'iricas. A diferencia del sector transable, donde las
+econom\'ias de aglomeraci\'on suelen modelarse como aumentos de productividad
+(v\'ia labor pooling o knowledge spillovers como lo exponía Moretti y Greenstone), en el sector de
+restaurantes el canal dominante son estas externalidades de demanda, en l\'inea
+con los modelos te\'oricos de aglomeraci\'on para comercio minorista y servicios
+locales.\footnote{Ver, por ejemplo, Varian (1980), Stahl (1982), Wolinsky
+(1993), Dudey (1990), Fischer y Harrington (1996), Bester (1998) y Konishi
+(2005).}
+
+\section{Test de Duranton y Overman (2005)}
+
+En este apartado implementamos el test de localizaci\'on de \citet{DurantonOverman2005} utilizando las variables construidas en el punto 1, en particular el n\'umero de restaurantes por mil habitantes diurnos en 2004 y 2012 (\texttt{pc\_rest\_2004}, \texttt{pc\_rest\_2012}) y el crecimiento porcentual per c\'apita (\texttt{growth\_pc}). A partir de \texttt{growth\_pc} identificamos los cinco barrios con mayor crecimiento en el n\'umero de restaurantes per c\'apita entre 2004 y 2012 y nos concentramos en la distribuci\'on espacial de los restaurantes dentro de esa submuestra de barrios.
+
+\subsection*{Implementaci\'on del test.}
+
+Primero seleccionamos los cinco barrios con mayor \texttt{growth\_pc} y extraemos sus pol\'igonos a partir del objeto espacial \texttt{milan}, transformando las geometr\'ias al sistema de coordenadas proyectado UTM 32N para trabajar en metros. Luego, para cada a\~no \(t \in \{2004,2012\}\), construimos el conjunto de restaurantes ubicados en esos cinco barrios que cuentan con coordenadas geogr\'aficas (\texttt{lat\_t}, \texttt{long\_t}) y calculamos todas las distancias bilaterales entre restaurantes. Las distancias se expresan en kil\'ometros y se recortan al intervalo \((0,1]\), tal como indica el enunciado.
+
+\noindent Sea \(d\) la distancia entre dos restaurantes. Para cada a\~no estimamos la densidad de la distribuci\'on de distancias observadas \(f_{\text{obs},t}(d)\) sobre \([0,1]\) mediante un estimador de densidad kernel univariado,
+\[
+\hat f_{\text{obs},t}(d)
+= \frac{1}{n_{t} h_t} \sum_{i=1}^{n_{t}} 
+K\!\left(\frac{d - d_i}{h_t}\right),
+\]
+donde \(K(\cdot)\) es un kernel sim\'etrico (en la implementaci\'on utilizamos un kernel de Epanechnikov, aunque los resultados son robustos a usar un kernel Gaussiano) y \(h_t\) es el ancho de banda elegido mediante la regla de Silverman (\texttt{bw = "nrd"} en \texttt{R}). La densidad se eval\'ua en una malla regular de 60 puntos entre 0 y 1 km.
+
+\noindent Bajo la hip\'otesis nula de Duranton y Overman, las ubicaciones de los restaurantes en los barrios analizados constituyen una muestra aleatoria simple del conjunto de ubicaciones potenciales dentro de la regi\'on de an\'alisis, condicional en \(N_t\), todo subconjunto de \(N_t\) sitios potenciales es igualmente probable. Para aproximar esta distribuci\'on nula, tomamos la uni\'on de los cinco barrios de mayor crecimiento como espacio de ubicaciones potenciales y realizamos \(B=500\) simulaciones. En cada simulaci\'on \(b\), muestreamos aleatoriamente \(N_t\) puntos dentro de los pol\'igonos (donde \(N_t\) es el n\'umero de restaurantes observados en esos barrios en el a\~no \(t\)), calculamos las distancias bilaterales simuladas en el intervalo \((0,1]\) km y estimamos la densidad kernel \(\hat f_{b,t}(d)\) usando el mismo kernel y ancho de banda que en el caso observado. Para cada punto de la malla \(d_j\) construimos una banda de simulaci\'on a partir de los percentiles emp\'iricos 5 y 95 de \(\{\hat f_{b,t}(d_j)\}_{b=1}^B\), obteniendo as\'i funciones \(\hat f_{t}^{5\%}(d)\) y \(\hat f_{t}^{95\%}(d)\).
+
+
+Finalmente, para cada a\~no graficamos la densidad observada \( \hat f_{\text{obs},t}(d) \) junto con la regi\'on sombreada delimitada por las curvas \(\hat f_{t}^{5\%}(d)\) y \(\hat f_{t}^{95\%}(d)\). Valores de la densidad observada persistentemente por encima (por debajo) de la envolvente simulado indican localizaci\'on (dispersi\'on) estad\'isticamente significativa a las distancias correspondientes.
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.49\textwidth]{test_DO_top5_2004_2012_Epan.png}
+    \caption{Test de Duranton y Overman para los cinco barrios con mayor crecimiento en restaurantes per c\'apita, 2004 y 2012. La l\'inea continua muestra la densidad observada de distancias entre restaurantes y la banda sombreada corresponde al intervalo entre los percentiles 5 y 95 de las simulaciones bajo la hip\'otesis nula.}
+    \label{fig:do_top5_2004_2012_Epan}
+\end{figure}
+
+\subsection*{Resultados}
+
+En ambos a\~nos la densidad de distancias observada se sit\'ua
+sistem\'aticamente por encima de la banda de simulaciones para distancias muy
+cortas, lo que indica localizaci\'on (aglomeraci\'on) de restaurantes a peque\~na
+escala dentro de los cinco barrios de mayor crecimiento. En 2004 la curva
+observada supera el l\'imite superior de la envolvente para distancias
+aproximadamente entre 0 y 0.36 km, mientras que en 2012 esto ocurre para
+distancias entre 0 y 0.31 km. Es decir, hay m\'as pares de restaurantes muy
+cercanos entre s\'i de lo que cabr\'ia esperar si las ubicaciones fueran
+puramente aleatorias dentro de los barrios considerados.
+
+Para distancias ligeramente mayores no encontramos evidencia estad\'istica de
+localizaci\'on ni de dispersi\'on: en 2004 la densidad observada se mantiene
+dentro de la banda de simulaci\'on aproximadamente entre 0.36 y 0.40 km, y en
+2012 entre 0.31 y 0.375 km. A partir de estos puntos, la curva observada cae
+por debajo del l\'imite inferior de la envolvente (en torno a 0.40 km en 2004 y
+0.375 km en 2012) y permanece por debajo de la banda en buena parte del
+intervalo hasta 1 km, lo que es consistente con dispersi\'on relativa a
+distancias medias y largas: hay menos pares de restaurantes a estas distancias
+de los que se obtendr\'ian bajo la hip\'otesis nula de ubicaciones aleatorias.
+
+En conjunto, el test de Duranton y Overman proporciona evidencia robusta de
+localizaci\'on de restaurantes a muy corta distancia y de dispersi\'on a
+distancias medias en los cinco barrios que m\'as expandieron su oferta per
+c\'apita entre 2004 y 2012, tanto al inicio como al final del per\'iodo. Este
+patr\'on es coherente con la interpretaci\'on de las actividades de restauraci\'on
+como un sector fuertemente sujeto a econom\'ias de aglomeraci\'on v\'ia
+externalidades de demanda: los restaurantes se benefician de ubicarse muy cerca
+de otros restaurantes porque atraen un mayor flujo de potenciales consumidores,
+aun a costa de una mayor presi\'on competitiva en precios.
+
+\noindent Como comprobaci\'on de robustez, re-estimamos el test de Duranton--Overman utilizando un kernel gaussiano. La forma de \(\hat f_{\text{obs},t}(d)\) y los tramos en los que la densidad observada se sit\'ua por encima (aglomeraci\'on a corta distancia) o por debajo (dispersi\'on a distancias medias) de la envolvente de simulaci\'on son muy similares al caso Epanechnikov, por lo que las conclusiones sobre la localizaci\'on de restaurantes resultan pr\'acticamente invariantes a la elecci\'on del kernel (en este caso en particular, Gaussiano-Epanechnikov).
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.49\textwidth]{test_DO_top5_2004_2012_gauss.png}
+    \caption{Test de Duranton y Overman para los cinco barrios con mayor crecimiento en restaurantes per c\'apita, 2004 y 2012. La l\'inea continua muestra la densidad observada de distancias entre restaurantes y la banda sombreada corresponde al intervalo entre los percentiles 5 y 95 de las simulaciones bajo la hip\'otesis nula.}
+    \label{fig:do_top5_2004_2012_gauss}
+\end{figure}
+\section{Conclusiones finales}
+
+En conjunto, los ejercicios muestran un cuadro coherente de c\'omo la liberalizaci\'on de la entrada en el sector de restaurantes en Mil\'an se traduce en una reconfiguraci\'on espacial y en cambios en la estructura de precios. La replicaci\'on de la Figura 1 del paper de Leonardi Moretti (2023) revela que, tras la reforma, algunos barrios se consolidan como polos de alta densidad de restaurantes per c\'apita mientras otros quedan rezagados, en l\'inea con un proceso de divergencia impulsado por econom\'ias de aglomeraci\'on. El an\'alisis no param\'etrico de la distribuci\'on de precios muestra una fuerte concentraci\'on alrededor de un rango relativamente estrecho y colas derechas moderadas, consistente con modelos de competencia en precios con b\'usqueda y diferenciaci\'on de producto, en los que la proximidad de establecimientos limita la dispersi\'on de precios.
+
+\noindent El test de Duranton y Overman aplicado a los cinco barrios de mayor crecimiento confirma la presencia de localizaci\'on significativa a distancias muy cortas y de dispersi\'on relativa a distancias medias, resultado robusto a la elecci\'on del kernel en la estimaci\'on de densidades. En conjunto, la evidencia emp\'irica respalda la interpretaci\'on de los restaurantes como un sector fuertemente afectado por externalidades de demanda: los establecimientos tienden a concentrarse en unos pocos barrios donde se benefician de mayor tr\'afico de clientes y complementariedades en la oferta, a la vez que se genera una estructura urbana m\'as desigual en el acceso local a amenidades de consumo.
+
+
+\begin{thebibliography}{9}
+
+\bibitem[Duranton y Overman(2005)]{DurantonOverman2005}
+Duranton, G., y H.~G. Overman (2005).
+Testing for localization using micro-geographic data.
+\emph{The Review of Economic Studies}, 72(4), 1077--1106.
+
+\bibitem[Leonardi y Moretti(2023)]{LeonardiMoretti2023}
+Leonardi, M., y E. Moretti (2023).
+The Agglomeration of Urban Amenities: Evidence from Milan Restaurants.
+\emph{American Economic Review: Insights}, 5(2), 141--157.
+
+\bibitem[Curso Economía Urbana(2025)]{NotasClaseUrbana}
+Notas de clase y material del curso (códigos) de Economía Urbana,
+Universidad de los Andes, 2025.
+
+
+\end{thebibliography}
+
+\end{document}
+
